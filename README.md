@@ -98,6 +98,11 @@ Disparity evaluation is avalaible
 python3 test_disp.py --pretrained-dispnet /path/to/dispnet --pretrained-posenet /path/to/posenet --dataset-dir /path/to/KITTI_raw --dataset-list /path/to/test_files_list
 ```
 
+To test on my machine:
+```
+python3 test_disp.py --pretrained-dispnet ./checkpoints/sfm-learner\,epoch_size1000\,seq5\,s2.0/04-11-17\:22/dispnet_model_best.pth.tar --dataset-dir /media/adrian/LinuxData/Datasets/Kitti-full/raw/ --dataset-list ./kitti_eval/test_files_eigen.txt
+```
+
 Test file list is available in kitti eval folder. To get fair comparison with [Original paper evaluation code](https://github.com/tinghuiz/SfMLearner/blob/master/kitti_eval/eval_depth.py), don't specify a posenet. However, if you do,  it will be used to solve the scale factor ambiguity, the only ground truth used to get it will be vehicle speed which is far more acceptable for real conditions quality measurement, but you will obviously get worse results.
 
 Pose evaluation is also available on [Odometry dataset](http://www.cvlibs.net/datasets/kitti/eval_odometry.php). Be sure to download both color images and pose !

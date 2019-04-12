@@ -12,7 +12,7 @@ import models
 from utils import tensor2array, save_checkpoint, save_path_formatter, log_output_tensorboard
 from inverse_warp import inverse_warp
 
-from loss_functions import photometric_reconstruction_loss, explainability_loss, smooth_loss, compute_errors
+from loss_functions import photometric_reconstruction_loss, explainability_loss, smooth_loss, compute_errors, inverse_depth_smooth_loss
 from logger import TermLogger, AverageMeter
 from tensorboardX import SummaryWriter
 
@@ -282,7 +282,7 @@ def train(args, train_loader, disp_net, pose_exp_net, optimizer, epoch_size, log
             loss_2 = explainability_loss(explainability_mask)
         else:
             loss_2 = 0
-        loss_3 = smooth_loss(depth)
+        loss_3 = inverse_depth_smooth_loss(depth, tgt_img)
 
         loss = w1*loss_1 + w2*loss_2 + w3*loss_3
 

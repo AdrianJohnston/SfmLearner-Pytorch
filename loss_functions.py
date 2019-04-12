@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from inverse_warp import inverse_warp
-
+import torchgeometry as tgm
 
 def photometric_reconstruction_loss(tgt_img, ref_imgs, intrinsics,
                                     depth, explainability_mask, pose,
@@ -87,6 +87,20 @@ def smooth_loss(pred_map):
         weight /= 2.3  # don't ask me why it works better
     return loss
 
+
+def inverse_depth_smooth_loss(pred_map, images):
+    
+    def one_scale(idepth, tgt_img):
+        b, _, h, w = scaled_map.size()
+        tgt_img =  F.interpolate(tgt_img, (h, w), mode='area')
+        return tgm.losses.inverse_depth_smoothness_loss(scaled_map, tgt_img)
+
+    loss = 0
+    weight = 1.
+    for scaled_map in pred_map:
+        loss +=  one_scale(scaled_map, images) * weight
+        weight /= 2.3  # don't ask me why it works better
+    return loss
 
 @torch.no_grad()
 def compute_errors(gt, pred, crop=True):
